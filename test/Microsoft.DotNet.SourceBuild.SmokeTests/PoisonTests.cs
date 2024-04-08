@@ -5,15 +5,18 @@
 using System;
 using System.IO;
 using System.Text.RegularExpressions;
+using Xunit;
 using Xunit.Abstractions;
 
 namespace Microsoft.DotNet.SourceBuild.SmokeTests
 {
     public class PoisonTests : SdkTests
     {
+        public static bool IncludePoisonTests => !string.IsNullOrWhiteSpace(Config.PoisonReportPath);
+
         public PoisonTests(ITestOutputHelper outputHelper) : base(outputHelper) { }
         
-        [SkippableFact(Config.PoisonReportPathEnv, skipOnNullOrWhiteSpaceEnv: true)]
+        [ConditionalFact(typeof(PoisonTests), nameof(IncludePoisonTests))]
         public void VerifyUsage()
         {
             if (!File.Exists(Config.PoisonReportPath))
